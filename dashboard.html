@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<!-- Transcript Modal -->
+<div id="transcript-modal" class="modal">
+    <div id="transcript-content" class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Official Transcript</h2>
+        <pre id="transcript-text"></pre>
+        <button id="print-transcript-btn" class="btn">Print Transcript</button>
+        <button id="download-transcript-btn" class="btn">Download as PDF</button>
+    </div>
+</div>
+<!-- Add Course Modal -->
+<div id="add-course-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Add New Course</h2>
+        
+        <!-- Step 1: Basic Info -->
+        <div id="step1" class="form-step">
+            <div class="form-group">
+                <label for="course-code">Course Code:</label>
+                <input type="text" id="course-code" placeholder="e.g., MATH101" required>
+            </div>
+            <div class="form-group">
+                <label for="course-name">Course Name:</label>
+                <input type="text" id="course-name" placeholder="e.g., Calculus I" required>
+            </div>
+            <button type="button" class="btn next-step">Next</button>
+        </div>
+        
+        <!-- Step 2: Details -->
+        <div id="step2" class="form-step" style="display:none;">
+            <div class="form-group">
+                <label for="course-credits">Credits:</label>
+                <input type="number" id="course-credits" min="1" max="6" value="3" required>
+            </div>
+            <div class="form-group">
+                <label for="course-prereqs">Prerequisites:</label>
+                <input type="text" id="course-prereqs" placeholder="e.g., MATH100,ENG101">
+            </div>
+            <div class="form-group">
+                <label for="course-description">Description:</label>
+                <textarea id="course-description" rows="3"></textarea>
+            </div>
+            <div class="form-nav">
+                <button type="button" class="btn prev-step">Previous</button>
+                <button type="button" class="btn" id="submit-course">Add Course</button>
+            </div>
+        </div>
+    </div>
+</div>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <h2>Menu</h2>
+            <ul>
+                <li><a href="#" class="active" data-section="dashboard">Dashboard</a></li>
+                <li><a href="#" data-section="grades">Grades</a></li>
+                <li><a href="#" data-section="schedule">Schedule</a></li>
+                <li><a href="#" data-section="courses">Course Catalog</a></li>
+                <li><a href="#" id="logout-btn">Logout</a></li>
+            </ul>
+        </div>
+        
+        <div class="main-content">
+            <!-- Dashboard Section -->
+            <div class="section" id="dashboard-section">
+                <div class="header">
+                    <h1>Welcome, <span id="student-name">Student</span></h1>
+                    <p id="current-date"></p>
+                </div>
+                
+                <div class="content-grid">
+                    <div class="card">
+                        <h2>Student Information</h2>
+                        <div class="student-info">
+                            <p><strong>ID:</strong> <span id="student-id"></span></p>
+                            <p><strong>Major:</strong> <span id="student-major"></span></p>
+                            <p><strong>Year:</strong> <span id="student-year"></span></p>
+                            <p><strong>GPA:</strong> <span id="student-gpa"></span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h2>Quick Actions</h2>
+                        <button id="add-grade-btn" class="action-btn">Add Grade</button>
+                        <button id="add-course-btn" class="action-btn">Register for Course</button>
+                        <button id="view-transcript-btn" class="action-btn">View Full Transcript</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Grades Section -->
+            <div class="section" id="grades-section" style="display:none;">
+                <div class="header">
+                    <h1>Grade Management</h1>
+                </div>
+                
+                <div class="card">
+                    <h2>Add New Grade</h2>
+                    <form id="grade-form">
+                        <div class="form-group">
+                            <label for="course-select">Course:</label>
+                            <select id="course-select" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="grade-input">Grade (A-F):</label>
+                            <input type="text" id="grade-input" pattern="[A-F][+-]?" required>
+                        </div>
+                        <button type="submit">Add Grade</button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <h2>Current Grades</h2>
+                    <table id="grades-table">
+                        <thead>
+                            <tr>
+                                <th>Course</th>
+                                <th>Grade</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Schedule Section -->
+            <div class="section" id="schedule-section" style="display:none;">
+                <div class="header">
+                    <h1>Class Schedule</h1>
+                </div>
+                
+                <div class="card">
+                    <h2>Current Schedule</h2>
+                    <table id="schedule-table">
+                        <thead>
+                            <tr>
+                                <th>Course</th>
+                                <th>Time</th>
+                                <th>Days</th>
+                                <th>Room</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- In the courses-section div -->
+
+            <!-- Course Catalog Section -->
+            <div class="section" id="courses-section" style="display:none;">
+                <div class="header">
+                    <h1>BHS Course Catalog</h1>
+                </div>
+                
+                <div class="card">
+                    <h2>Available Courses</h2>
+                    <div class="search-box">
+                        <input type="text" id="course-search" placeholder="Search courses...">
+                    </div>
+                    <table id="catalog-table">
+                        <thead>
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Course Name</th>
+                                <th>Credits</th>
+                                <th>Prerequisites</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                
+                <div class="card">
+                    <h2>Completed Courses</h2>
+                    <table id="completed-courses-table">
+                        <thead>
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Course Name</th>
+                                <th>Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="course-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Register for Course</h2>
+            <form id="register-course-form">
+                <div class="form-group">
+                    <label for="modal-course-select">Course:</label>
+                    <select id="modal-course-select" required></select>
+                </div>
+                <div class="form-group">
+                    <label for="course-time">Time:</label>
+                    <input type="text" id="course-time" placeholder="e.g., 9:00-10:30" required>
+                </div>
+                <div class="form-group">
+                    <label for="course-days">Days:</label>
+                    <input type="text" id="course-days" placeholder="e.g., MWF" required>
+                </div>
+                <div class="form-group">
+                    <label for="course-room">Room:</label>
+                    <input type="text" id="course-room" required>
+                </div>
+                <button type="submit">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
